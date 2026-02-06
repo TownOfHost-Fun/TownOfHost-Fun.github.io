@@ -41,6 +41,16 @@ input, select, label {{ padding: 5px; margin: 10px 10px 10px 0; vertical-align: 
 <h1>TownOfHost-Fun Web</h1>
 <p class="small">最終更新: {generated_time}</p>
 
+<div style="margin:20px 0;">
+<iframe src="https://discord.com/widget?id=1399723941722853376&theme=dark"
+        width="350"
+        height="500"
+        allowtransparency="true"
+        frameborder="0"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts">
+</iframe>
+</div>
+
 <div class="tabs">
 <button class="tablink active" onclick="openTab(event,'ticketsTab')">チケット</button>
 <button class="tablink" onclick="openTab(event,'modsTab')">バージョン</button>
