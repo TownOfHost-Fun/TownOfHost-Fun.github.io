@@ -50,10 +50,6 @@ input, select, label {{ padding: 5px; margin: 10px 10px 10px 0; vertical-align: 
 <div id="ticketsTab" class="tabcontent" style="display:block;">
 <h2>チケット</h2>
 <div class="controls">
-<label for="statusFilter">ステータスで絞り込み：</label>
-<select id="statusFilter" onchange="filterTickets()">
-<option value="open">⚠️未修正</option>
-</select>
 <label for="titleSearch">タイトルで検索：</label>
 <input type="text" id="titleSearch" onkeyup="filterTickets()" placeholder="タイトルで検索">
 <span class="small">「ID」をクリックして昇順/降順を切り替えることができます</span><br>
@@ -75,15 +71,19 @@ input, select, label {{ padding: 5px; margin: 10px 10px 10px 0; vertical-align: 
 """
 
 tickets_rows = ""
+open_count = 0
 for row in tickets:
+    status_raw = row.get("status", "").lower()
+    if status_raw != "open":
+        continue
+    open_count += 1
     channel_id = str(row.get("channel_id", ""))
     channel_link = f"https://discord.com/channels/{SERVER_ID}/{channel_id}"
 
-    status_raw = row.get("status", "").lower()
-    status_jp = "⚠️未修正" if status_raw == "open" else "✅修正済み"
+    status_jp = "⚠️未修正"
 
     tickets_rows += (
-        f"<tr data-status='{html.escape(status_raw)}'>"
+        f"<tr>"
         f"<td>{html.escape(str(row.get('id', '')))}</td>"
         f"<td>{html.escape(str(row.get('version', '')))}</td>"
         f"<td>{html.escape(status_jp)}</td>"
@@ -92,6 +92,9 @@ for row in tickets:
         f"</tr>"
     )
 
+
+if open_count == 0:
+    tickets_rows = """<tr><td colspan="5" style="text-align:center;padding:20px;">現在報告されている不具合はありません。</td></tr>"""
 
 tickets_end = """
 </tbody>
@@ -140,29 +143,14 @@ function toggleSortById(){
 }
 
 function filterTickets(){
-    var status = document.getElementById("statusFilter").value.toLowerCase();
-    var search = document.getElementById("titleSearch").value.toLowerCase();
-    var trs = document.querySelectorAll("#ticketsTable tbody tr");
-
+    var search=document.getElementById("titleSearch").value.toLowerCase();
+    var trs=document.querySelectorAll("#ticketsTable tbody tr");
     trs.forEach(function(tr){
-        var tds = tr.getElementsByTagName("td");
-        if(tds.length < 5){
-            tr.style.display = "";
-            return;
-        }
-        
-        var rowStatus = tr.dataset.status;
-
-        var rowTitle = tds[3].textContent.toLowerCase();
-
-        var visible =
-            (status === "" || rowStatus === status) &&
-            rowTitle.includes(search);
-
-        tr.style.display = visible ? "" : "none";
+        var tds=tr.getElementsByTagName("td");
+        if(tds.length<5){tr.style.display="";return;}
+        tr.style.display=tds[3].textContent.toLowerCase().includes(search)?"":"none";
     });
 }
-
 
 document.addEventListener("DOMContentLoaded", function(){
     try{
