@@ -52,9 +52,7 @@ input, select, label {{ padding: 5px; margin: 10px 10px 10px 0; vertical-align: 
 <div class="controls">
 <label for="statusFilter">ステータスで絞り込み：</label>
 <select id="statusFilter" onchange="filterTickets()">
-<option value="">全て</option>
 <option value="open">⚠️未修正</option>
-<option value="closed">✅修正済み</option>
 </select>
 <label for="titleSearch">タイトルで検索：</label>
 <input type="text" id="titleSearch" onkeyup="filterTickets()" placeholder="タイトルで検索">
